@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test_Demo</title>
+
+    <script src="jspsych-6.1.0/jspsych.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-image-keyboard-response.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-instructions.js"></script>
+
+    <link rel="stylesheet" href="jspsych-6.1.0/css/jspsych.css"></link>
+</head>
+<body></body>
+
+
+
+<script>
+    // Welcome Screen
+    var welcome_block = {
+        data: {
+            screen_id: "Welcome"
+        },
+        type: "html-button-response",
+        stimulus: "সার্ভে",
+        choices: ["Click here to continue"],
+    };
+
+    // Instructions
+
+    var instruction_block = {
+        data: {
+            screen_id: "instructions"
+        },
+        type: "instructions",
+        pages: [
+            //Page one of Instructions instructions, use comma to separate pages
+
+            "<p>এটি বাংলা ভাষার উপর একটি গবেষণামূলক সার্ভে। </p>" +
+            "<p>গবেষকরা হলেন : </p>" +
+            "<p><b>ঈশানী গুহ </b>(গবেষক, দিল্লী বিশ্ববিদ্যালয়) এবং</p>" +
+            "  <b>স্বর্ণেন্দু মৈত্র </b>(গবেষক, যাদবপুর বিশ্ববিদ্যালয়)।</p>",
+
+            //Page two for instructions
+
+            "<p>এই সার্ভে ফর্মটি পূর্ণ করতে আপনার ১৫ মিনিট সময় লাগবে। </p>" +
+            "<p>এখানে আপনাকে বাংলায় ২৪টি বাক্য দেখানো হবে এবং সেগুলি নির্দিষ্ট ছবির সঙ্গে মিলছে কিনা জিজ্ঞাসা করা হবে।</p>",
+
+            //Page three for instructions
+
+
+
+
+
+            "<p>সার্ভে শুরু করার আগে আপনার সম্বন্ধে কিছু সাধারণ তথ্য সংগ্রহ করব, </p>" +
+            "<p>যা শুধুমাত্র এই গবেষণাটির পরিসংখ্যানমূলক বিশ্লেষণের কাজেই ব্যবহৃত হবে।</p>" +
+            "<p>এই তথ্য আর কোন গবেষণার কাজে ব্যবহার করা হবে না।</p>" +
+            "<p>এই গবেষণার কোন অংশেই আপনার পরিচয় বা তথ্য আলাদা করে সনাক্ত করা হবে না বা সেগুলি সর্বজনসমক্ষে প্রকাশ করা হবে না।</p>",
+
+            //page 3
+            "<p>আসল সার্ভেটি শুরু করার আগে সার্ভের প্রশ্নের দুটি নমুনা দেওয়া হল। </p>" +
+            "<p>প্রতিটি প্রশ্নে একটি বাক্য ও একটি ছবি রয়েছে। আপনাকে বাক্যের সঙ্গে ছবির মিল আছে কিনা নির্ণয় করতে হবে ।</p>" +
+            "<p>এবং সিদ্ধান্ত নিয়ে <b>হ্যাঁ [ F ]</b> অথবা <b>না</b> <b>[ J ]</b> সনাক্ত করতে হবে</p>" ,
+
+            /*page 4
+            "<p>আসল সার্ভেটি শুরু করার আগে সার্ভের প্রশ্নের দুটি নমুনা দেওয়া হল। </p>" +
+            "<p>প্রতিটি প্রশ্নে একটি বাক্য ও একটি ছবি রয়েছে। আপনাকে বাক্যের সঙ্গে ছবির মিল আছে কিনা নির্ণয় করতে হবে ।</p>" +
+            "<p>এবং সিদ্ধান্ত নিয়ে <b>হ্যাঁ</b> অথবা <b>না</b> সনাক্ত করতে হবে</p>" ,
+            */
+            /*
+
+            "<p>Here I will try to add image</p>" +
+            "<div style='float: left;'><img src='jspsych-6.1.0/img/happy_face_1.jpg'></img>" +
+            "<p>Press the <b>Left Key</b> for Girl </p></div>" +
+            "<div style='float: right;'><img src='jspsych-6.1.0/img/happy_face_2.jpg'></img>" +
+            "<p>Press the <b>Right Key</b>for Guy </p></div>",
+
+            "We will begin with some practice trials"
+            */
+
+
+        ],
+        show_clickable_nav: true,
+    };
+
+    //trial stimuli together
+
+    var trial_stimuli = [
+        {stimulus: "img/Taj.png", data: {screen_id: "trial", correct_response: 74}},
+        {stimulus: "img/Ladder.png", data: {screen_id: "trial", correct_response: 70}},
+
+    ];
+
+    //Fixation point
+    var fixation_point = {
+        data: {screen_id: "fixation"},
+        type: 'html-keyboard-response',
+        stimulus: "<div style='font-size: 60px'> <b> + </b> </div>",
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 1000
+    };
+
+
+    /*Practice Trials
+
+    var taj_trial = {
+        type: "image-keyboard-response",
+        stimulus: "img/Taj.png",
+        choices: [70, 74],
+        trial_duration: null,
+    };
+
+     var ladder_trial = {
+        type: "image-keyboard-response",
+        stimulus: "img/Ladder.png",
+        choices: [70, 74],
+        trial_duration: null,
+    };
+    */
+
+
+    // one trial that fits all, Create trials
+
+    var trial = {
+        data: jsPsych.timelineVariable("data"),
+        type: "image-keyboard-response",
+        stimulus: jsPsych.timelineVariable("stimulus"),
+        choices: [70, 74],
+        trial_duration: 3000, //null for no limit
+        on_finish: function(data) {
+            // Populate correct or incorrect data
+            //Match correct with incorrect
+
+            if (data.key_press == data.correct_response) { //if key_press = correct_response --> Correct
+                data.accuracy = 1
+            } else {                            // if key_press != correct_response --> incorrect
+                data.accuracy = 0
+            }
+        }
+    };
+
+    var ITI_duration = [500, 750, 1000];
+
+    //Feedback (shows correct or incorrect)
+    var feedback_trial = {
+        data: {screen_id: "feedback"},
+        type: "html-keyboard-response",
+        stimulus: function() {
+            // obtain the accuracy from the previous trial
+            var last_trial_accuracy = jsPsych.data.get().last(1).values()[0].accuracy;
+
+            //if the accuracy == 1, report correct
+            //if the accuracy == 0, report incorrect
+            if (last_trial_accuracy == 1){
+                return "Correct!"
+            } else {
+                return "incorrect"
+            }
+        },
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 500,
+        //ISI : inter stimulus interval
+        //fixed ISI
+        //post_trial_gap: 500,
+        // different value of ISI
+        post_trial_gap: jsPsych.randomization.sampleWithoutReplacement(ITI_duration, 2), //1 = 1/3 as 3 num in the array | 2= 1/2
+        //
+        //post_trial_gap: jsPsych.randomization.sampleWithReplacement(ITI_duration, 1, [1,1,1]), equally
+    };
+
+    //Procedure
+
+    var prac_procedure = {
+        timeline: [fixation_point, trial, feedback_trial],
+        timeline_variables: trial_stimuli,
+        randomize_order: true,
+        //repetitions: 5,
+    };
+
+
+    //Experiment Instructions
+    var exp_instructions = {
+        data: {screen_id: "experimental_instructions"},
+        type: "instructions",
+        pages: [
+            //Post Practice Instructions
+            "<p> We have Completed our practice. </p>" +
+            "<p>প্রতিটি প্রশ্নে একটি বাক্য ও একটি ছবি রয়েছে। আপনাকে বাক্যের সঙ্গে ছবির মিল আছে কিনা নির্ণয় করতে হবে ।</p>" +
+            "<p>এবং সিদ্ধান্ত নিয়ে <b>হ্যাঁ [ F ]</b> অথবা <b>না</b> <b>[ J ]</b> সনাক্ত করতে হবে</p>" ,
+
+            "<p>We will begin the experiment now</p>"
+        ],
+        show_clickable_nav: true,
+    };
+
+    //Actual Expeimental Trial
+    var exp_procedure = {
+        timeline: [fixation_point, trial],
+        timeline_variables: trial_stimuli,
+        randomize_order: true,
+        repetitions: 2,
+    };
+
+
+
+
+    // Debrief
+    var debrief ={
+        data: {screen_id: "debrief"},
+        type: "instructions",
+        pages: [
+            //Post Practice Instructions
+            "<p> We have Completed our experiment </p>" +
+            "<p>Please close the Screen</p>",
+        ],
+        //show_clickable_nav: true,
+    };
+
+
+
+
+
+    // Timeline (array type) in order of appearence
+    timeline = [];
+    timeline.push(welcome_block);
+    timeline.push(instruction_block);
+    timeline.push(prac_procedure);
+    timeline.push(exp_instructions);
+    timeline.push(exp_procedure);
+    timeline.push(debrief);
+
+    //timeline.push(ladder_trial);
+
+
+    //Start Experiment
+    jsPsych.init({
+        timeline: timeline,
+        on_finish: function(){
+            jsPsych.data.displayData()
+
+        }
+    })
+
+
+
+</script>
+
+
+
+</html>>

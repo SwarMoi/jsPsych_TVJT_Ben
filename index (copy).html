@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test_Demo</title>
+
+    <script src="jspsych-6.1.0/jspsych.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-survey-html-form.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-image-keyboard-response.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-instructions.js"></script>
+
+    <script src="jspsych-6.1.0/plugins/jspsych-survey-text.js"></script>
+
+    <script src="jspsych-6.1.0/utils.js"></script>
+
+    <link rel="stylesheet" href="jspsych-6.1.0/css/jspsych.css"></link>
+    <style>
+        body{
+              background-color: rgb(207, 207, 207);
+              text-align: center;
+              padding: 20x;
+              font-size: medium;
+            }
+    </style>
+</head>
+<body></body>
+
+
+
+<script>
+
+    //Constants date
+    var TODAY = new Date();
+    var DD = String(TODAY.getDate()).padStart(2,'0');
+    var MM = String(TODAY.getMonth() + 1).padStart(2,'0');
+    var YYYY = TODAY.getFullYear();
+    const DATE = YYYY + MM + DD;
+
+    // Experimental Parameters
+        //Repititions
+    PRACT_REP = 1;
+    EXP_REP = 1;
+    FDBCK_DUR = 500;
+
+
+        // Welcome Screen
+    /*
+    var welcome_block = {
+        data: {
+            screen_id: "Welcome"
+        },
+        type: "survey-html-form",
+        preamble: "সার্ভে",
+        html: "<p>Participant ID: <input name='Part_ID' type='text' /> </p>"
+        //choices: ["Click here to continue"],
+        on_finish: function(data) {
+            responses = JSON.parse(data.responses);
+            jsPsych.data.addProperties({
+                part_ID: data.responses.Part_ID, // Will add Participant ID to all of the data columns
+            })
+        }
+    };
+    */ 
+    // From github 
+    var welcome_block = {
+        data: {
+            screen_id: "welcome"
+        },
+        type: "survey-html-form",
+        preamble: "<p>Welcome to the experiment!</p>" +
+            "Please complete the form",
+        html: "<p>Participant ID: <input name='Part_ID' type='text' /></p>",
+
+        on_finish: function(data) {
+            console.log(full_design);
+            responses = JSON.parse(data.responses);
+            jsPsych.data.addProperties({
+                part_ID: responses.Part_ID,
+                ID_DATE: responses.Part_ID + "_" + DATE,
+            })
+        }
+    };
+    
+    //Consent Form
+
+    var consent = {
+      type: "survey-html-form",
+      preamble: '<h1><br><br>অনুমতি ফর্ম</h1><p style="color: black; font-size: 20px;">পরীক্ষায় অংশ নিতে সম্মত হওয়ার আগে দয়া করে নিম্নলিখিত তথ্যগুলি বিবেচনা করুন: <br>কোন কোন উপাদানগুলি সামাজিক রায় এবং সিদ্ধান্ত গ্রহণকে প্রভাবিত করে, তা এই পরীক্ষার উদ্দেশ্য। আপনাকে সামাজিক পরিস্থিতিগুলিতে ব্যক্তি এবং ক্রিয়া সম্পর্কে বিচার করতে বলা হবে। আমরা কেবল আপনার রায়ে আগ্রহী।<br><br>এই গবেষণায় আপনার অংশগ্রহণ সম্পূর্ণ স্বেচ্ছাসম্মত। আপনার অংশগ্রহণ গোপনীয় থাকবে। আপনার ব্যক্তিগত প্রতিক্রিয়াগুলি কখনই বিশেষভাবে বিশ্লেষণ করা হবে না। এই পরীক্ষাটি প্রায় 5 মিনিট সময় নেবে। এই সময়ের মধ্যে অন্যন্য কাজ থেকে নিজেকে বিরত রাখুন। আপনার অংশগ্রহণ সম্পর্কে যদি আপনার কোন প্রশ্ন বা উদ্বেগ থাকে তবে দয়া করে আমাকে লিখুন, অর্জুন মিত্র - arjmit@iitk.ac.in এ|<br><br></h1>',
+      html: '<br><input type="radio" id="consent" name="consent" value="consent" required><br><label for="consent" required><p style="color: black; font-size: 20px;">আমি এই গবেষণায় অংশ নিতে সম্মত।<br><br></label>',
+      button_label: 'পরবর্তী'
+    }
+    
+    /* defining the demographics trial */
+    var demo1 = {
+      type: "survey-text",
+      preamble: '<p align="center" style="color: black; font-size: 25px; padding-left:5em; padding-right:5em; font-weight: bold;">জনসংখ্যার বিবরণ (অনুগ্রহ করে উত্তরটি ইংরেজিতে দিন)</p>',
+      questions: [
+        {prompt: "নাম (ইংরেজি লিখুন. আপনি অনামী থাকতে চান তবে ANON লিখুন):", rows: 1, columns: 40, required: true, name: "name"},
+        {prompt: "থাকার জায়গা (শহর / শহর / গ্রামের নাম. ইংরেজি লিখুন):", rows:1, columns: 40, required: true, name:"city"},
+        {prompt: "বয়স (সংখ্যায় লিখুন):", rows: 1, columns: 2, required: true, name: "age"},
+      ],
+      button_label: "পরবর্তী"
+      };
+    
+
+    var demo2 = {
+      type: "survey-html-form",
+      preamble:'<p align="center" style="color: black; font-size: 25px; padding-bottom:1em; padding-top:0.1em; font-weight: bold;">জনসংখ্যার বিবরণ</p>',
+      html:'<form class = "pure-form pure-form-aligned"><fieldset><div class="pure-control-group"> <label for="aligned-name">নাম: </label><input type="text" id="aligned-name" placeholder="আপনার নাম" /> </div></form>'+
+           '<form class = "pure-form-aligned"><div class="pure-control-group"> <label for="aligned-name">নাম: </label><input type="text" id="aligned-name" placeholder="আপনার নাম" /> </div></fieldset></form>',       
+      button_label: "পরবর্তী"
+    }
+
+
+    var demo3 = {
+      type: "survey-html-form",
+      preamble:'<p align="center" style="color: black; font-size: 25px; padding-bottom:1em; padding-top:0.1em; font-weight: bold;">জনসংখ্যার বিবরণ</p>',
+      html:'<fieldset>  <label> email </label> <input type="email" name="email"> </fieldset>'+
+           '<fieldset> <p><label> নাম </label> <input type="text" required minlength="4" maxlength="30" size="25" placeholder= "আপনার নাম" name="name"> </fieldset>',      
+      button_label: "পরবর্তী"
+    }
+
+    var demo4 = {
+      type: "survey-html-form",
+      preamble:'<p align="center" style="color: black; font-size: 25px; padding-bottom:1em; padding-top:0.1em; font-weight: bold;">জনসংখ্যার বিবরণ</p>',
+      html: '<fieldset> <legend><span class="number">1</span> Basic information</legend>' +
+            '<input type="text" id="name" name="name" placeholder="আপনার নাম" > ' + 
+            '<input type="email" id="email" name="email" placeholder="Email">' +
+            '<label for"gender">লিঙ্গ</label>  <select id="sex" name="sex"> <option value="M">পুরুষ</option> <option value="F">মহিলা</option> <option value="O">অন্য</option> </select>' + 
+            '<label for"edu">শিক্ষাগত যোগ্যতা</label>  <select id="edu" name="edu"> <option value="ss">স্কুল</option> <option value="hs">হাই স্কুল</option> <option value="clg">কলেজ</option> <option value="uni">বিশ্ববিদ্যালয়</option>' +
+            '<input type="number" id="age" name="age" placeholder="বয়স">' +
+            '<label for"mt"><b> আপনার মাতৃভাষা কি বাংলা? </b></label> <input type="radio" id="yes" name="mt" value="yes"checked> <label for="Y">হ্যাঁ।</label> <input type="radio" id="N" name="mt" value="no"> <label for="NO">না।</label>'+ 
+            '<input type="text" id="birth_place" name="birth_place" placeholder="জন্মস্থান (গ্রাম/শহর, রাজ্য)" > ' +
+            '<label for"mt"><b> জন্মস্থানে জন্মের পর থেকে কতদিন থেকেছেন? </b> </label> <input type="radio" id="yes" name="mt" value="yes"checked> <label for="Y">৩ বছরের কম</label> <input type="radio" id="N" name="mt" value="no"> <label for="NO">৩ থেকে ৫ বছরের মধ্যে</label> <input type="radio" id="N" name="mt" value="no"> <label for="NO">৫ বছরের বেশি</label>'+
+            '<input type="text" id="present_place" name="present_place" placeholder="বর্তমান বাসস্থান (গ্রাম/শহর, রাজ্য)">' +
+            '</fieldset> ',        
+      button_label: "পরবর্তী"
+    }
+
+    //'<p style="padding-right: 0.5em;"> নাম : <input type="Name" id="name" name="name" required minlength="4" maxlength="30" size="25" placeholder= "Name"> </p>'+
+    //<option value="ss">স্কুল</option> <option value="hs">"হাই স্কুল"</option> <option value="clg">"কলেজ"</option> <option value="uni">"বিশ্ববিদ্যালয়"</option>
+
+    var form_trial = {
+        type: 'survey-html-form',
+        preamble: '<p> How are you feeling <b>right now?</b> </p>',
+        html: '<br> নাম : <input type="Name" id="name" name="name" required minlength="4" maxlength="30" size="25" placeholder= "Name">'+
+              '<br> Email :  <input name="email" type="email" size="25" placeholder= "অনুগ্রহ করে Gmail আইডিটি দেবেন।">'+      
+              '<p> লিঙ্গ :  <select id="sex"><option value="M">পুরুষ</option><option value="F">মহিলা</option></p>'+ 
+              '<p> Email :  <input name="email" type="email" size="25" placeholder= "অনুগ্রহ করে Gmail আইডিটি দেবেন।"></p>'+        
+              '<p>',
+        
+    };
+    var survey_trial = {
+        type: 'survey-text',
+        questions: [
+            {prompt: "How old are you?"}, 
+            {prompt: "Where were you born?", placeholder: "City, State/Province, Country"}
+        ],
+    };
+
+
+    // Instructions
+
+    var instruction_block = {
+        data: {
+            screen_id: "instructions"
+        },
+        type: "instructions",
+        pages: [
+            //Page one of Instructions instructions, use comma to separate pages
+
+            "<p>এটি বাংলা ভাষার উপর একটি গবেষণামূলক সার্ভে। </p>" +
+            "<p>গবেষকরা হলেন : </p>" +
+            "<p><b>ঈশানী গুহ </b>(গবেষক, দিল্লী বিশ্ববিদ্যালয়) এবং</p>" +
+            "  <b>স্বর্ণেন্দু মৈত্র </b>(গবেষক, যাদবপুর বিশ্ববিদ্যালয়)।</p>",
+
+            //Page two for instructions
+
+            "<p>এই সার্ভে ফর্মটি পূর্ণ করতে আপনার ১৫ মিনিট সময় লাগবে। </p>" +
+            "<p>এখানে আপনাকে বাংলায় ২৪টি বাক্য দেখানো হবে এবং সেগুলি নির্দিষ্ট ছবির সঙ্গে মিলছে কিনা জিজ্ঞাসা করা হবে।</p>",
+
+            //Page three for instructions
+
+
+
+
+
+            "<p>সার্ভে শুরু করার আগে আপনার সম্বন্ধে কিছু সাধারণ তথ্য সংগ্রহ করব, </p>" +
+            "<p>যা শুধুমাত্র এই গবেষণাটির পরিসংখ্যানমূলক বিশ্লেষণের কাজেই ব্যবহৃত হবে।</p>" +
+            "<p>এই তথ্য আর কোন গবেষণার কাজে ব্যবহার করা হবে না।</p>" +
+            "<p>এই গবেষণার কোন অংশেই আপনার পরিচয় বা তথ্য আলাদা করে সনাক্ত করা হবে না বা সেগুলি সর্বজনসমক্ষে প্রকাশ করা হবে না।</p>",
+
+            //page 3
+            "<p>আসল সার্ভেটি শুরু করার আগে সার্ভের প্রশ্নের দুটি নমুনা দেওয়া হল। </p>" +
+            "<p>প্রতিটি প্রশ্নে একটি বাক্য ও একটি ছবি রয়েছে। আপনাকে বাক্যের সঙ্গে ছবির মিল আছে কিনা নির্ণয় করতে হবে ।</p>" +
+            "<p>এবং সিদ্ধান্ত নিয়ে <b>হ্যাঁ [ F ]</b> অথবা <b>না</b> <b>[ J ]</b> সনাক্ত করতে হবে</p>" ,
+
+            /*page 4
+            "<p>আসল সার্ভেটি শুরু করার আগে সার্ভের প্রশ্নের দুটি নমুনা দেওয়া হল। </p>" +
+            "<p>প্রতিটি প্রশ্নে একটি বাক্য ও একটি ছবি রয়েছে। আপনাকে বাক্যের সঙ্গে ছবির মিল আছে কিনা নির্ণয় করতে হবে ।</p>" +
+            "<p>এবং সিদ্ধান্ত নিয়ে <b>হ্যাঁ</b> অথবা <b>না</b> সনাক্ত করতে হবে</p>" ,
+            */
+            /*
+
+            "<p>Here I will try to add image</p>" +
+            "<div style='float: left;'><img src='jspsych-6.1.0/img/happy_face_1.jpg'></img>" +
+            "<p>Press the <b>Left Key</b> for Girl </p></div>" +
+            "<div style='float: right;'><img src='jspsych-6.1.0/img/happy_face_2.jpg'></img>" +
+            "<p>Press the <b>Right Key</b>for Guy </p></div>",
+
+            "We will begin with some practice trials"
+            */
+
+
+        ],
+        show_clickable_nav: true,
+    };
+
+    //trial stimuli together : Becomes redundant when we use factorial design
+/*
+    var trial_stimuli = [
+        {stimulus: "img/Taj.png", data: {screen_id: "trial", stimulus: "Taj", correct_response: 74}},
+        {stimulus: "img/Ladder.png", data: {screen_id: "trial", stimulus: "Ladder", correct_response: 70}},
+
+    ];
+*/
+
+   
+
+
+
+
+    // Timeline (array type) in order of appearence
+    timeline = [];
+    //timeline.push(welcome_block);
+    //timeline.push(survey_trial);
+    //timeline.push(consent);
+    //timeline.push(demo1);
+    //timeline.push(demo2);
+    //timeline.push(demo3);
+    timeline.push(demo4);
+  
+    //timeline.push(ladder_trial);
+
+
+    //Start Experiment
+    jsPsych.init({
+        timeline: timeline,
+
+        // Interaction with browser
+        on_interaction_data_update: function(data){
+            // get the main trial data
+            var trial = jsPsych.currentTrial();
+            trial.data.screen_focus = data.event;      
+            
+        },
+
+
+        on_finish: function(){
+            var csv = jsPsych.data.get().csv();
+
+            // Saves the data file in csv form with the name of Participand ID asked in the begining    
+            var filename = jsPsych.data.get().values()[0].part_ID + "_" + DATE + ".csv";   
+            // Save the data file in the predefined filename
+            //var filename = "SRT_task.csv";           
+            downloadCSV(csv,filename);
+
+            jsPsych.data.displayData()
+
+        }
+    })
+
+
+
+</script>
+
+
+
+</html>>

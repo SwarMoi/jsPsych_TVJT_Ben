@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Using CSS form</title>
+
+    <script src="jspsych-6.1.0/jspsych.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-survey-html-form.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-image-keyboard-response.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-instructions.js"></script>
+
+    <script src="jspsych-6.1.0/plugins/jspsych-survey-text.js"></script>
+
+    <script src="jspsych-6.1.0/utils.js"></script>
+
+    <link rel="stylesheet" href="jspsych-6.1.0/css/jspsych.css"></link>
+    
+    // Demography form
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="formDesign.css">
+    
+    <style>
+        body{
+              background-color: rgb(207, 207, 207);
+              text-align: center;
+              padding: 20x;
+              font-size: medium;
+            }
+    </style>
+</head>
+<body></body>
+
+
+
+<script>
+
+    //Constants date
+    var TODAY = new Date();
+    var DD = String(TODAY.getDate()).padStart(2,'0');
+    var MM = String(TODAY.getMonth() + 1).padStart(2,'0');
+    var YYYY = TODAY.getFullYear();
+    const DATE = YYYY + MM + DD;
+
+    // Experimental Parameters
+        //Repititions
+    PRACT_REP = 1;
+    EXP_REP = 1;
+    FDBCK_DUR = 500;
+
+
+        // Welcome Screen
+    /*
+    var welcome_block = {
+        data: {
+            screen_id: "Welcome"
+        },
+        type: "survey-html-form",
+        preamble: "সার্ভে",
+        html: "<p>Participant ID: <input name='Part_ID' type='text' /> </p>"
+        //choices: ["Click here to continue"],
+        on_finish: function(data) {
+            responses = JSON.parse(data.responses);
+            jsPsych.data.addProperties({
+                part_ID: data.responses.Part_ID, // Will add Participant ID to all of the data columns
+            })
+        }
+    };
+    */ 
+    // From github 
+    var welcome_block = {
+        data: {
+            screen_id: "welcome"
+        },
+        type: "survey-html-form",
+        preamble: "<p>Welcome to the experiment!</p>" +
+            "Please complete the form",
+        html: "<p>Participant ID: <input name='Part_ID' type='text' /></p>",
+
+        on_finish: function(data) {
+            console.log(full_design);
+            responses = JSON.parse(data.responses);
+            jsPsych.data.addProperties({
+                part_ID: responses.Part_ID,
+                ID_DATE: responses.Part_ID + "_" + DATE,
+            })
+        }
+    };
+    
+    //Consent Form
+
+   
+    
+    /* defining the demographics trial */
+    
+    
+
+    var deemed = {
+      type: "survey-html-form",
+      html: "<head>" +
+                '<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript"></script>' + 
+            "</head>" +
+            "<body> <div class='maincontent'>" + 
+                "<div class='navigation'>" +
+                    "<h2>জনসংখ্যার বিবরণ</h2>" +
+                "</div>" +     
+                "<form class='form'>" +
+                    "<div class='control_group required'>" +
+                        "<div class='label help'>" +
+                            "<i>?</i>" +
+                            "<label for='input'> <b>নাম</b> </label>" +
+                            "<span>Here will be placed explanatory information about concrete label term. In this case it would be for. What is Text input?</span>" +
+                        "<div>" +
+                        "<div class='input'>" +
+                            "<input id='input' placeholder='আপনার নাম' required='required' type='text'>" +
+                        "</div>" +
+                    "<div>" +
+                "</form>" +
+            "</body>",
+      button_label: "পরবর্তী"
+    }
+
+
+
+    
+
+
+   
+
+    //'<p style="padding-right: 0.5em;"> নাম : <input type="Name" id="name" name="name" required minlength="4" maxlength="30" size="25" placeholder= "Name"> </p>'+
+    //<option value="ss">স্কুল</option> <option value="hs">"হাই স্কুল"</option> <option value="clg">"কলেজ"</option> <option value="uni">"বিশ্ববিদ্যালয়"</option>
+
+    
+
+
+    // Instructions
+
+    
+    //trial stimuli together : Becomes redundant when we use factorial design
+/*
+    var trial_stimuli = [
+        {stimulus: "img/Taj.png", data: {screen_id: "trial", stimulus: "Taj", correct_response: 74}},
+        {stimulus: "img/Ladder.png", data: {screen_id: "trial", stimulus: "Ladder", correct_response: 70}},
+
+    ];
+*/
+
+   
+
+
+
+
+    // Timeline (array type) in order of appearence
+    timeline = [];
+    //timeline.push(welcome_block);
+    //timeline.push(survey_trial);
+    //timeline.push(consent);
+    //timeline.push(demo1);
+    //timeline.push(demo2);
+    //timeline.push(demo3);
+    timeline.push(deemed);
+  
+    //timeline.push(ladder_trial);
+
+
+    //Start Experiment
+    jsPsych.init({
+        timeline: timeline,
+
+        // Interaction with browser
+        on_interaction_data_update: function(data){
+            // get the main trial data
+            var trial = jsPsych.currentTrial();
+            trial.data.screen_focus = data.event;      
+            
+        },
+
+
+        on_finish: function(){
+            var csv = jsPsych.data.get().csv();
+
+            // Saves the data file in csv form with the name of Participand ID asked in the begining    
+            var filename = jsPsych.data.get().values()[0].part_ID + "_" + DATE + ".csv";   
+            // Save the data file in the predefined filename
+            //var filename = "SRT_task.csv";           
+            downloadCSV(csv,filename);
+
+            jsPsych.data.displayData()
+
+        }
+    })
+
+
+
+</script>
+
+
+
+</html>>

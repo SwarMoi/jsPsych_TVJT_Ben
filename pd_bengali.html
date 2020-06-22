@@ -1,0 +1,264 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>Experiment</title>
+        <script src="jsPsych-6.1.0/jspsych.js"></script>
+        <script src="jsPsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
+        <script src="jsPsych-6.1.0/plugins/jspsych-external-html.js"></script>
+        <script src="jsPsych-6.1.0/plugins/jspsych-survey-multi-select.js"></script>
+        <script src="jsPsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+        <script src="jsPsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
+        <script src="jsPsych-6.1.0/plugins/jspsych-categorize-html.js"></script>
+        <script src="jsPsych-6.1.0/plugins/jspsych-survey-html-form.js"></script>
+        <script src="jsPsych-6.1.0/plugins/jspsych-survey-text.js"></script>
+        <script src="jsPsych-6.1.0/plugins/jspsych-survey-likert.js"></script>
+        <script src="jsPsych-6.1.0/plugins/jspsych-image-button-response.js"></script>
+        <script src="jsPsych-6.1.0/plugins/jspsych-image-keyboard-response.js"></script>
+        <link href="jspsych-6.1.0/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+        <style>
+          body{
+              background-color: rgb(207, 207, 207);
+              text-align: center;
+              padding: 20x;
+              font-size: medium;
+            }
+    </style>
+  </head>
+  <body></body>
+  <script>
+
+/*	function saveData(name, data){
+  		var xhr = new XMLHttpRequest();
+  		xhr.open('POST', 'write_data.php'); // 'write_data.php' is the path to the php file described above.
+  		xhr.setRequestHeader('Content-Type', 'application/json');
+  		xhr.send(JSON.stringify({filename: name, filedata: data}));
+	}
+*/
+    /* creating timeline */
+    var timeline = [];
+
+    var consent = {
+      type: "survey-html-form",
+      preamble: '<h1><br><br>অনুমতি ফর্ম</h1><p style="color: black; font-size: 20px;">পরীক্ষায় অংশ নিতে সম্মত হওয়ার আগে দয়া করে নিম্নলিখিত তথ্যগুলি বিবেচনা করুন: <br>কোন কোন উপাদানগুলি সামাজিক রায় এবং সিদ্ধান্ত গ্রহণকে প্রভাবিত করে, তা এই পরীক্ষার উদ্দেশ্য। আপনাকে সামাজিক পরিস্থিতিগুলিতে ব্যক্তি এবং ক্রিয়া সম্পর্কে বিচার করতে বলা হবে। আমরা কেবল আপনার রায়ে আগ্রহী।<br><br>এই গবেষণায় আপনার অংশগ্রহণ সম্পূর্ণ স্বেচ্ছাসম্মত। আপনার অংশগ্রহণ গোপনীয় থাকবে। আপনার ব্যক্তিগত প্রতিক্রিয়াগুলি কখনই বিশেষভাবে বিশ্লেষণ করা হবে না। এই পরীক্ষাটি প্রায় 5 মিনিট সময় নেবে। এই সময়ের মধ্যে অন্যন্য কাজ থেকে নিজেকে বিরত রাখুন। আপনার অংশগ্রহণ সম্পর্কে যদি আপনার কোন প্রশ্ন বা উদ্বেগ থাকে তবে দয়া করে আমাকে লিখুন, অর্জুন মিত্র - arjmit@iitk.ac.in এ|<br><br></h1>',
+      html: '<br><input type="radio" id="consent" name="consent" value="consent" required><br><label for="consent" required><p style="color: black; font-size: 20px;">আমি এই গবেষণায় অংশ নিতে সম্মত।<br><br></label>',
+      button_label: 'পরবর্তী'
+    }
+    timeline.push(consent)
+
+    /* defining the demographics trial */
+    var demo1 = {
+      type: "survey-text",
+      preamble: '<p align="center" style="color: black; font-size: 25px; padding-left:5em; padding-right:5em; font-weight: bold;">জনসংখ্যার বিবরণ (অনুগ্রহ করে উত্তরটি ইংরেজিতে দিন)</p>',
+      questions: [
+        {prompt: "নাম (ইংরেজি লিখুন. আপনি অনামী থাকতে চান তবে ANON লিখুন):", rows: 1, columns: 40, required: true, name: "name"},
+        {prompt: "থাকার জায়গা (শহর / শহর / গ্রামের নাম. ইংরেজি লিখুন):", rows:1, columns: 40, required: true, name:"city"},
+        {prompt: "বয়স (সংখ্যায় লিখুন):", rows: 1, columns: 2, required: true, name: "age"},
+      ],
+      button_label: "পরবর্তী"
+      };
+    timeline.push(demo1);
+
+    var demo2 = {
+      type: "survey-html-form",
+      preamble:'<p align="center" style="color: black; font-size: 25px; padding-bottom:1em; padding-top:0.1em; font-weight: bold;">জনসংখ্যার বিবরণ</p>',
+      html:'<p align="left" style="padding-left:9em;">লিঙ্গ:<br><input type="radio" id="male" name="gender" value="male"><label for="male">পুরুষ</label>'+
+        '<br><input type="radio" id="female" name="gender" value="female"><label for="female">মহিলা</label>'+
+        '<br><input type="radio" id="other" name="gender" value="other" required><label for="other">অন্যান্য</label>'+
+        '<br><br><br>বাসস্থান:<br><input type="radio" id="locality" name="locality" value="urban" required><label for="urban">শহুরে লোকালয়ে বসবাস</label>'+
+        '<br><input type="radio" id="rural" name="locality" value="rural"><label for="rural">গ্রামীণ লোকালয়ে বসবাস</label>'+
+        '<br><input type="radio" id="resettlement" name="locality" value="resettlement"><label for="resettlement">পুনর্বাসনের উপনিবেশে বসবাস করা</label>'+
+        '<br><input type="radio" id="slums" name="locality" value="slums"><label for="slums">বস্তিতে বসবাস</label>'+
+        '<br><input type="radio" id="mobile" name="locality" value="mobile"><label for="mobile">কোনও স্থির থাকার জায়গা নেই</label>'+
+        '<br><br>নিজের শিক্ষার বিবরণ:<br><input type="radio" id="prof" name="edu" value="prof" required><label for="prof">প্রযুক্তিগত ডিগ্রি বা ডিপ্লোমা সহ পেশাদার যোগ্যতা, যেমন, ডাক্তার, ইঞ্জি। সিএ, এমবিএ ইত্যাদি</label>'+
+        '<br><input type="radio" id="pg" name="edu" value="pg"><label for="pg">স্নাতকোত্তর (অপ্রযুক্তিগত কোর্স, পিএইচডি ইত্যাদি)</label>'+
+        '<br><input type="radio" id="ug" name="edu" value="ug"><label for="ug">স্নাতক</label>'+
+        '<br><input type="radio" id="10" name="edu" value="10"><label for="10">দশম শ্রেণি পাস কিন্তু স্নাতক এর চেয়ে কম</label>'+
+        '<br><input type="radio" id="primary" name="edu" value="primary"><label for="primary">প্রাথমিক পাস তবে দশম এর চেয়ে কম</label>'+
+        '<br><input type="radio" id="1yr" name="edu" value="1yr"><label for="1yr">প্রাথমিকের চেয়ে কম তবে কমপক্ষে এক বছরের জন্য স্কুলে পড়াশুনা</label>'+
+        '<br><input type="radio" id="noschool" name="edu" value="noschool"><label for="noschool">শুধু শিক্ষিত কিন্তু কোন স্কুলিং না</label>'+
+        '<br><input type="radio" id="illit" name="edu" value="illit"><label for="illit">নিরক্ষর</label>'+
+        '<br><br>স্বামী / স্ত্রীর শিক্ষার বিবরণ:<br>'+
+	      '<input type="radio" id="prof" name="spouse_edu" value="prof" required><label for="prof">প্রযুক্তিগত ডিগ্রি বা ডিপ্লোমা সহ পেশাদার যোগ্যতা, যেমন, ডাক্তার, ইঞ্জি সিএ, এমবিএ ইত্যাদি</label>'+
+        '<br><input type="radio" id="pg" name="spouse_edu" value="pg"><label for="pg">স্নাতকোত্তর (অপ্রযুক্তিগত কোর্স, পিএইচডি ইত্যাদি)</label>'+
+        '<br><input type="radio" id="ug" name="spouse_edu" value="ug"><label for="ug">স্নাতক</label>'+
+        '<br><input type="radio" id="10" name="spouse_edu" value="10"><label for="10">দশম শ্রেণি পাস কিন্তু স্নাতক এর চেয়ে কম</label>'+
+        '<br><input type="radio" id="primary" name="spouse_edu" value="primary"><label for="primary">প্রাথমিক পাস তবে দশম এর চেয়ে কম</label>'+
+        '<br><input type="radio" id="1yr" name="spouse_edu" value="1yr"><label for="1yr">প্রাথমিকের চেয়ে কম তবে কমপক্ষে এক বছরের জন্য স্কুলে পড়াশুনা</label>'+
+        '<br><input type="radio" id="noschool" name="spouse_edu" value="noschool"><label for="noschool">শুধু শিক্ষিত কিন্তু কোন স্কুলিং না</label>'+
+        '<br><input type="radio" id="illit" name="spouse_edu" value="illit"><label for="illit">নিরক্ষর</label>'+
+        '<br><input type="radio" id="not_app" name="spouse_edu" value="not_app"><label for="not_app">প্রযোজ্য নয়</label>'+
+        '<br><br>নিজের পেশার বিবরণ:<br><input type="radio" id="govt" name="occu" value="govt" required><label for="govt">কেন্দ্রীয় / রাজ্য / সরকারী উদ্যোগে পরিষেবা বা 20 টিরও বেশি ব্যক্তি নিযুক্ত কোনও সংস্থার মালিক বা স্বনিযুক্ত পেশাদার যেমন ডাক্তার, সিএ, ইঞ্জিনিয়ার ইত্যাদি</label>'+
+        '<br><input type="radio" id="private" name="occu" value="private"><label for="private">বেসরকারী খাতে পরিষেবা বা একটি স্বতন্ত্র ব্যবসা রয়েছে যা 2 থেকে 20 জন ব্যক্তিকে নিয়োগ দেয়</label>'+
+        '<br><input type="radio" id="shops" name="occu" value="shops"><label for="shops">দোকান, বাড়ি, পরিবহন বা নিজস্ব জমি চাষের পরিষেবা</label>'+
+        '<br><input type="radio" id="self_emp" name="occu" value="self_emp"><label for="self_emp">স্ব-কর্মসংস্থান 5000 এরও বেশি আয়ের সাথে (যেমন, দোকানগুলি, প্রস্তুত বা ক্ষুদ্র ব্যবসায়)</label>'+
+        '<br><input type="radio" id="laborer" name="occu" value="laborer"><label for="laborer">স্ব-কর্মসংস্থান 5000 এর চেয়ে কম আয়ের সাথে (যেমন, শ্রমিক, গৃহবধূ)</label>'+
+        '<br><input type="radio" id="unemp" name="occu" value="unemp"><label for="unemp">পরিবারের সদস্যদের কেউই নিযুক্ত নেই</label>'+
+        '<br><input type="radio" id="student" name="occu" value="student"><label for="student">ছাত্র</label>'+
+        '<br><input type="radio" id="not_app" name="occu" value="not_app"><label for="not_app">প্রযোজ্য নয়</label>'+
+        '<br><br>স্বামী / স্ত্রীর পেশার বিবরণ:<br><input type="radio" id="govt" name="occu_spouse" value="govt" required><label for="govt">কেন্দ্রীয় / রাজ্য / সরকারী উদ্যোগে পরিষেবা বা 20 টিরও বেশি ব্যক্তি নিযুক্ত কোনও সংস্থার মালিক বা স্বনিযুক্ত পেশাদার যেমন ডাক্তার, সিএ, ইঞ্জিনিয়ার ইত্যাদি</label>'+
+        '<br><input type="radio" id="private" name="occu_spouse" value="private"><label for="private">বেসরকারী খাতে পরিষেবা বা একটি স্বতন্ত্র ব্যবসা রয়েছে যা 2 থেকে 20 জন ব্যক্তিকে নিয়োগ দেয়</label>'+
+        '<br><input type="radio" id="shops" name="occu_spouse" value="shops"><label for="shops">দোকান, বাড়ি, পরিবহন বা নিজস্ব জমি চাষের পরিষেবা</label>'+
+        '<br><input type="radio" id="self_emp" name="occu_spouse" value="self_emp"><label for="self_emp">স্ব-কর্মসংস্থান 5000 এরও বেশি আয়ের সাথে (যেমন, দোকানগুলি, প্রস্তুত বা ক্ষুদ্র ব্যবসায়)</label>'+
+        '<br><input type="radio" id="laborer" name="occu_spouse" value="laborer"><label for="laborer">স্ব-কর্মসংস্থান 5000 এর চেয়ে কম আয়ের সাথে (যেমন, শ্রমিক, গৃহবধূ)</label>'+
+        '<br><input type="radio" id="unemp" name="occu_spouse" value="unemp"><label for="unemp">পরিবারের সদস্যদের কেউই নিযুক্ত নেই</label>'+
+        '<br><input type="radio" id="student" name="occu_spouse" value="student"><label for="student">ছাত্র</label>'+
+        '<br><input type="radio" id="not_app" name="occu_spouse" value="not_app"><label for="not_app">প্রযোজ্য নয়</label>'+
+        '<br><br>জাত:<br><input type="radio" id="upper" name="caste" value="upper" required><label for="upper">উচ্চ বর্ণ</label>'+
+        '<br><input type="radio" id="obc" name="caste" value="obc"><label for="obc">ওবিসি</label>'+
+        '<br><input type="radio" id="Dalits" name="caste" value="Dalits"><label for="Dalits">এসসি</label>'+
+        '<br><input type="radio" id="tribals" name="caste" value="tribals"><label for="tribals">এসটি</label>'+
+        '<br><br>সমস্ত সূত্র থেকে মাথাপিছু আয় (পরিবারের সদস্য সংখ্যা প্রতি মোট মাসিক আয়):<br><input type="radio" id=">50k" name="income" value=">50k" required><label for=">50k">>50000</label>'+
+        '<br><input type="radio" id="20k-50k" name="income" value="20k-50k"><label for="20k-50k">20000-49999</label>'+
+        '<br><input type="radio" id="10k-20k" name="income" value="10k-20k"><label for="10k-20k">10000-19999</label>'+
+        '<br><input type="radio" id="5k-10k" name="income" value="5k-10k"><label for="5k-10k">5000-9999</label>'+
+        '<br><input type="radio" id="2500-4999" name="income" value="2500-4999"><label for="2500-4999">2500-4999</label>'+
+        '<br><input type="radio" id="5k-10k" name="income" value="5k-10k"><label for="5k-10k">5000-9999</label>'+
+        '<br><input type="radio" id="1000-2499" name="income" value="1000-2499"><label for="1000-2499">1000-2499</label>'+
+        '<br><input type="radio" id="<1000" name="income" value="<1000"><label for="<1000"><1000</label></p>',
+      button_label: "পরবর্তী"
+    }
+    timeline.push(demo2)
+    var demo3 = {
+      type:'survey-multi-select',
+      preamble:'<p align="centre" style="color: black; font-size: 25px; font-weight: bold;">জনসংখ্যার বিবরণ</p>',
+      questions: [
+        {
+          prompt: 'পরিবারের সম্পত্তি (প্রযোজ্য সেগুলিকে টিক দিন):',
+          options: ["ফ্রিজ", "টিভি", "রেডিও / ট্রানজিস্টার / সঙ্গীত সিস্টেম","এসি", "ওয়াশিং মেশিন", "টেলিফোন", "মোবাইল", "ক্রেডিট কার্ড", "স্যানিটারি ল্যাট্রিন", "কোনও পত্রিকা যা পুরো মাস জুড়ে সাবস্ক্রাইব হয়"],
+          horizontal: false,
+          required: true,
+          name: "Possessions"
+        }
+      ],
+      button_label: "পরবর্তী",
+    }
+    timeline.push(demo3)
+
+    /* defining instructions trial */
+    var instructions = {
+    type: "html-button-response",
+    stimulus: "<br><br><br><br><br><br><br><h1>পরীক্ষায় স্বাগতম!</h1>" +
+    '<p style="color: black; font-size: 20px; padding-right:5em; padding-left:5em;"> এই পরীক্ষায়, আপনাকে চলমান COVID 19 মহামারীর সাথে প্রাসঙ্গিক একটি দৃশ্যে, একটি রায় দিতে বলা হবে। রায় দেওয়ার সময়, আপনাকে দুটি সম্ভাব্য বিকল্পের একটি বেছে নিতে হবে। আপনি উত্তর দিতে আপনার সময় নিতে পারেন। <br>বাস্তব জীবনে আপনি এই জাতীয় পরিস্থিতিতে কী সিদ্ধান্ত নেবেন তার অনুরূপ সত্যতার সাথে এখানে উত্তর দিন।<br><br>মনে রাখবেন, সঠিক বা ভুল উত্তরের মতো কিছুই নেই। আপনার পক্ষে সর্বাধিক বোধগম্য বিকল্পটি নির্বাচন করুন। যেমন আগেই বলা হয়েছে, আপনার উত্তর গোপনীয় থাকবে।<br><br><br>',
+    choices:  ['<p style="color: black; font-size: 20px; font-weight: bold; padding-right:2em; padding-left:2em;">পরবর্তী']
+    };
+    timeline.push(instructions);
+
+    /* defining main trial */
+    var L10 = ['কম', '10', 'low']
+    var L100 = ['কম', '100', 'low']
+    var L1000 = ['কম', '1000', 'low']
+    var H10 = ['উচ্চ', '10', 'high']
+    var H100 = ['উচ্চ', '100', 'high']
+    var H1000 = ['উচ্চ', '1000', 'high']
+
+    var arr = [L10, L100, L1000, H10, H100, H1000]
+    var shuffle_arr = jsPsych.randomization.shuffle(arr)
+
+    var trial = {
+      type: "html-button-response",
+      stimulus: "<br><br><br><br><h1>মনোযোগ দিয়ে পড়ুন এবং উত্তর দিন।</h1>"+'<p align="left" style="color: black; font-size: 20px; padding-left:5em; padding-right:5em;"> আপনি আপনার আশেপাশের একটি মহাসড়ক ধরে হাঁটছেন এবং দেখলেন একটি ট্রাক আপনার কাছে আসছে। ট্রাকটি আপনার কাছে থামে এবং ড্রাইভার আপনাকে নিকটস্থ একটি গন্তব্যের দিক নির্দেশনা জানতে চেয়। ড্রাইভার আপনাকে বলে যে ট্রাকটি প্রয়োজনীয় খাদ্য সরবরাহের একটি পণ্যসম্ভার বহন করছে - যা জরুরি ভিত্তিতে উক্ত গন্তব্যে পৌঁছে দিতে হবে। আপনি জানেন যে অবস্থানটিতে প্রায় ' + shuffle_arr[0][1] +' জন লোক রয়েছে এবং বর্তমানে কঠোর লকডাউনের আওতায় রয়েছে। <br><br> তবে ড্রাইভার COVID19 রোগে আক্রান্ত হওয়ার লক্ষণ প্রদর্শন করছে। আপনি লক্ষণগুলি থেকে বলতে পারেন যে ভাইরাস দ্বারা আক্রান্ত হওয়ার ড্রাইভারের ' + shuffle_arr[0][0] +' ঝুঁকি রয়েছে। <br><br>আপনি ড্রাইভারকে সঠিক দিকনির্দেশনা দিতে এবং সরবরাহ করতে বেছে নিতে পারেন, তবে যারা গন্তব্যস্থলে আছেন তাদের মধ্যে রোগ আক্রান্ত হওয়ার ঝুঁকিতে| <br>অথবা, আপনি তাকে ভুল নির্দেশনা দিতে পারেন যাতে চালক এবং ট্রাককে বিচ্ছিন্ন/কোয়ারানটাইন করে দেওয়া হয়, এবং সরবরাহগুলি বন্ধ হয়ে যায়, যাতে লোকেরা কোনও খাবার না পায়।<p/>'+ '<p align="left" style="color: black; font-size: 20px; padding-left:5em; padding-right:5em; font-weight: bold; ">ট্রাকটিকে তার গন্তব্যে প্রেরণ করতে এবং লোকজনের কাছে খাদ্য সরবরাহের জন্য \'বিতরণ\' ক্লিক করুন। <br>ড্রাইভার এবং ট্রাককে আলাদা করে রাখতে এবং সরবরাহ বন্ধ করতে \'কোয়ারানটাইন\' ক্লিক করুন।।</p>'+"<br><br><div style='float: centre;'><img src='img/moral_bengali.png'></img> <br><br><br>",
+      choices: ['<p style="font-size:20px; font-weight: bold;">বিতরণ</p>', '<p style="font-size:20px; font-weight: bold;">কোয়ারানটাইন</p>']
+      };
+
+    timeline.push(trial);
+
+    /* defining the survey */
+    var scale_1 = [
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">একদমই না</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">একটু</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">নিরপেক্ষ</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">খুব</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">অত্যন্ত</p>'
+    ];
+
+    var scale_12 = [
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">একদমই না</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">একটু</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">নিরপেক্ষ</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">খুব</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">অত্যন্ত</p>'
+    ]
+
+    var scale_13 = [
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">একদমই না</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">একটু</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">নিরপেক্ষ</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">খুব</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">অত্যন্ত</p>'
+    ]
+
+    var scale_2 = [
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">হ্যাঁ</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">না</p>'
+    ];
+    var scale_3 = [
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">হ্যাঁ - স্ব বিচ্ছিন্ন</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">হ্যাঁ - আদেশে</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">না</p>'
+    ];
+    var scale_4 = [
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">হ্যাঁ - প্রয়োজনীয় পরিষেবা সরবরাহকারী</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">হ্যাঁ - তবে প্রয়োজনীয় পরিষেবা সরবরাহকারী নয়</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">না - লকডাউনের কারণে</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">না - চাকুরী থেকে অব্যাহতি</p>',
+      '<p align="center" style="color: black; font-size: 20px; padding-left:3em; padding-right:3em;">না - আগের থেকে কাজ করছেন না</p>',
+    ];
+
+    var survey = {
+      type: 'survey-likert',
+      preamble: '<h1>দয়া করে নীচের প্রশ্নের উত্তর দিন।</h1>',
+      questions: [
+        {prompt: '<p align="center" style="color: black; font-size: 20px; padding-left:5em; padding-right:5em;">আপনি কী ভাবেন, COVID19 এর পরিস্থিতি কি গুরুতর?</p>', labels: scale_1, required: true, name: "cond_serious"},
+        {prompt: '<p align="center" style="color: black; font-size: 20px; padding-left:5em; padding-right:5em;">লকডাউন পরিস্থিতি বিবেচনা করে, প্রয়োজনীয় সরবরাহগুলি অর্জন করা আপনার পক্ষে কতটা কঠিন হয়েছে?</p>', labels:scale_12, required: true, name: "supplies"},
+        {prompt: '<p align="center" style="color: black; font-size: 20px; padding-left:5em; padding-right:5em;">আপনি কি মনে করেন যে ব্যক্তিগত ব্যবস্থা নেওয়া (চূড়ান্তকরণ, লক-ডাউন, সামাজিক দূরত্ব) এই রোগের বিস্তারকে নিয়ন্ত্রণ করার জন্য যথেষ্ট?</p>', labels: scale_13, required: true, name: "personal_measures_curb"},
+        {prompt: '<p align="center" style="color: black; font-size: 20px; padding-left:5em; padding-right:5em;">আপনি কি COVID19 রোগের সংক্রমণ করেছেন?</p>', labels: scale_2, required: true, name: "you_contracted"},
+        {prompt: '<p align="center" style="color: black; font-size: 20px; padding-left:5em; padding-right:5em;">আপনার কাছাকাছি অবস্থান করছে এমন লোকেরা কি COVID 19 এ আক্রান্ত হয়েছে?</p>', labels: scale_2, required: true, name: "rel_contracted"},
+        {prompt: '<p align="center" style="color: black; font-size: 20px; padding-left:5em; padding-right:5em;">আপনি কি বর্তমানে কোয়ারান্টাইনড বা লকডাউনে আছেন?</p>', labels: scale_3, required: true, name: "in_lockdown"},
+        {prompt: '<p align="center" style="color: black; font-size: 20px; padding-left:5em; padding-right:5em;">লকডাউন পরিস্থিতি বিবেচনা করে, আপনার কি বর্তমানে কাজ করা দরকার?</p>', labels: scale_4, required: true, name: "working"},
+      ],
+      randomize_question_order: true,
+      button_label: "পরবর্তী"
+    };
+
+    timeline.push(survey);
+
+    /* final trial */
+    var final_trial = {
+    type: "survey-text",
+    preamble: '<p align="center" style="color: black; font-size: 25px; font-weight: bold;">নিম্নলিখিত প্রশ্নের সঠিক উত্তর দিন।</p>',
+    questions: [
+      {prompt: "পরীক্ষায় আপনি কেন ট্রাকটির জন্য সেই নির্দিষ্ট দিকটি বেছে নিয়েছিলেন? (দয়া করে এটি ইংরেজিতে লিখুন)", rows: 5, columns: 40, required: true, name: "why_the_choice"}
+    ],
+    button_label: "পরবর্তী"
+    };
+    timeline.push(final_trial);
+
+    /*Unique subject ID, save data, and thank you screen*/
+    let subjectID = Date.now()
+    let lang = "beng"
+
+    var endOfExperiment = {
+        type: "survey-text",
+        preamble: '<p align="center" style="color: black; font-size: 25px; padding-bottom:1em; padding-top:1em; font-weight: bold;">পরীক্ষার সমাপ্তি।</p><p>ধন্যবাদ!</p><br>আপনি যদি আমাদের ল্যাব থেকে এই জাতীয় পরীক্ষায় অংশ নিতে চান তবে নীচের বাক্সগুলিতে আপনার ইমেল আইডি এবং / অথবা ফোন নম্বরটি লিখুন:',
+        questions: [
+          {prompt: "ইমেইল আইডি: ", name: "email", rows: 1, columns: 20},
+          {prompt: "ফোন (দেশের কোড সহ): ", name: "phone", rows:1, columns:20}
+        ],
+        button_label: "শেষ",
+	on_start: function(){saveData(shuffle_arr[0]+"_"+lang+"_"+subjectID, jsPsych.data.get().csv())}
+    };
+    timeline.push(endOfExperiment);
+
+    var final = {
+    type: "html-keyboard-response",
+    stimulus: '<p><br><br></p><p align="center" style="color: black; font-size: 20px; font-weight: bold;">পরীক্ষায় অংশ নেওয়ার জন্য আপনাকে ধন্যবাদ। আপনি এখন উইন্ডো বন্ধ করতে পারেন।</p>',
+    choices: jsPsych.NO_KEYS
+    }
+
+    timeline.push(final)
+
+    jsPsych.init({
+        timeline: timeline,
+    });
+  </script>
+</html>

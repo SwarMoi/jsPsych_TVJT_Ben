@@ -5,26 +5,188 @@
 
     <script src="jspsych-6.1.0/jspsych.js"></script>
     <script src="jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-survey-html-form.js"></script>
     <script src="jspsych-6.1.0/plugins/jspsych-image-keyboard-response.js"></script>
     <script src="jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
     <script src="jspsych-6.1.0/plugins/jspsych-instructions.js"></script>
 
+    <script src="jspsych-6.1.0/plugins/jspsych-survey-text.js"></script>
+
+    <script src="jspsych-6.1.0/utils.js"></script>
+
     <link rel="stylesheet" href="jspsych-6.1.0/css/jspsych.css"></link>
+    <style>
+        body{
+              background-color: rgb(207, 207, 207);
+              text-align: center;
+              padding: 20x;
+              font-size: medium;
+            }
+    </style>
 </head>
 <body></body>
 
 
 
 <script>
-    // Welcome Screen
+
+    //Constants date
+    var TODAY = new Date();
+    var DD = String(TODAY.getDate()).padStart(2,'0');
+    var MM = String(TODAY.getMonth() + 1).padStart(2,'0');
+    var YYYY = TODAY.getFullYear();
+    const DATE = YYYY + MM + DD;
+
+    // Experimental Parameters
+        //Repititions
+    PRACT_REP = 1;
+    EXP_REP = 1;
+    FDBCK_DUR = 500;
+
+
+        // Welcome Screen
+    /*
     var welcome_block = {
         data: {
             screen_id: "Welcome"
         },
-        type: "html-button-response",
-        stimulus: "সার্ভে",
-        choices: ["Click here to continue"],
+        type: "survey-html-form",
+        preamble: "সার্ভে",
+        html: "<p>Participant ID: <input name='Part_ID' type='text' /> </p>"
+        //choices: ["Click here to continue"],
+        on_finish: function(data) {
+            responses = JSON.parse(data.responses);
+            jsPsych.data.addProperties({
+                part_ID: data.responses.Part_ID, // Will add Participant ID to all of the data columns
+            })
+        }
     };
+    */ 
+    // From github 
+    var welcome_block = {
+        data: {
+            screen_id: "welcome"
+        },
+        type: "survey-html-form",
+        preamble: "<p>Welcome to the experiment!</p>" +
+            "Please complete the form",
+        html: "<p>Participant ID: <input name='Part_ID' type='text' /></p>",
+
+        on_finish: function(data) {
+            console.log(full_design);
+            responses = JSON.parse(data.responses);
+            jsPsych.data.addProperties({
+                part_ID: responses.Part_ID,
+                ID_DATE: responses.Part_ID + "_" + DATE,
+            })
+        }
+    };
+    
+    //Consent Form
+
+    var consent = {
+      type: "survey-html-form",
+      preamble: '<h1><br><br>অনুমতি ফর্ম</h1><p style="color: black; font-size: 20px;">পরীক্ষায় অংশ নিতে সম্মত হওয়ার আগে দয়া করে নিম্নলিখিত তথ্যগুলি বিবেচনা করুন: <br>কোন কোন উপাদানগুলি সামাজিক রায় এবং সিদ্ধান্ত গ্রহণকে প্রভাবিত করে, তা এই পরীক্ষার উদ্দেশ্য। আপনাকে সামাজিক পরিস্থিতিগুলিতে ব্যক্তি এবং ক্রিয়া সম্পর্কে বিচার করতে বলা হবে। আমরা কেবল আপনার রায়ে আগ্রহী।<br><br>এই গবেষণায় আপনার অংশগ্রহণ সম্পূর্ণ স্বেচ্ছাসম্মত। আপনার অংশগ্রহণ গোপনীয় থাকবে। আপনার ব্যক্তিগত প্রতিক্রিয়াগুলি কখনই বিশেষভাবে বিশ্লেষণ করা হবে না। এই পরীক্ষাটি প্রায় 5 মিনিট সময় নেবে। এই সময়ের মধ্যে অন্যন্য কাজ থেকে নিজেকে বিরত রাখুন। আপনার অংশগ্রহণ সম্পর্কে যদি আপনার কোন প্রশ্ন বা উদ্বেগ থাকে তবে দয়া করে আমাকে লিখুন, অর্জুন মিত্র - arjmit@iitk.ac.in এ|<br><br></h1>',
+      html: '<br><input type="radio" id="consent" name="consent" value="consent" required><br><label for="consent" required><p style="color: black; font-size: 20px;">আমি এই গবেষণায় অংশ নিতে সম্মত।<br><br></label>',
+      button_label: 'পরবর্তী'
+    }
+    
+    /* defining the demographics trial */
+    var demo1 = {
+      type: "survey-text",
+      preamble: '<p align="center" style="color: black; font-size: 25px; padding-left:5em; padding-right:5em; font-weight: bold;">জনসংখ্যার বিবরণ (অনুগ্রহ করে উত্তরটি ইংরেজিতে দিন)</p>',
+      questions: [
+        {prompt: "নাম (ইংরেজি লিখুন. আপনি অনামী থাকতে চান তবে ANON লিখুন):", rows: 1, columns: 40, required: true, name: "name"},
+        {prompt: "থাকার জায়গা (শহর / শহর / গ্রামের নাম. ইংরেজি লিখুন):", rows:1, columns: 40, required: true, name:"city"},
+        {prompt: "বয়স (সংখ্যায় লিখুন):", rows: 1, columns: 2, required: true, name: "age"},
+      ],
+      button_label: "পরবর্তী"
+      };
+    
+
+    var demo2 = {
+      type: "survey-html-form",
+      preamble:'<p align="center" style="color: black; font-size: 25px; padding-bottom:1em; padding-top:0.1em; font-weight: bold;">জনসংখ্যার বিবরণ</p>',
+      html:'<select ><>' +
+        '<p align="left" style="padding-left:9em;">লিঙ্গ:<input type="radio" id="male" name="gender" value="male"><label for="male">পুরুষ</label>'+
+        '<input type="radio" id="female" name="gender" value="female"><label for="female">মহিলা</label>'+
+        '<input type="radio" id="other" name="gender" value="other" required><label for="other">অন্যান্য</label>'+
+        '<br><br><br>বাসস্থান:<br><input type="radio" id="locality" name="locality" value="urban" required><label for="urban">শহুরে লোকালয়ে বসবাস</label>'+
+        '<br><input type="radio" id="rural" name="locality" value="rural"><label for="rural">গ্রামীণ লোকালয়ে বসবাস</label>'+
+        '<br><input type="radio" id="resettlement" name="locality" value="resettlement"><label for="resettlement">পুনর্বাসনের উপনিবেশে বসবাস করা</label>'+
+        '<br><input type="radio" id="slums" name="locality" value="slums"><label for="slums">বস্তিতে বসবাস</label>'+
+        '<br><input type="radio" id="mobile" name="locality" value="mobile"><label for="mobile">কোনও স্থির থাকার জায়গা নেই</label>'+
+        '<br><br>নিজের শিক্ষার বিবরণ:<br><input type="radio" id="prof" name="edu" value="prof" required><label for="prof">প্রযুক্তিগত ডিগ্রি বা ডিপ্লোমা সহ পেশাদার যোগ্যতা, যেমন, ডাক্তার, ইঞ্জি। সিএ, এমবিএ ইত্যাদি</label>'+
+        '<br><input type="radio" id="pg" name="edu" value="pg"><label for="pg">স্নাতকোত্তর (অপ্রযুক্তিগত কোর্স, পিএইচডি ইত্যাদি)</label>'+
+        '<br><input type="radio" id="ug" name="edu" value="ug"><label for="ug">স্নাতক</label>'+
+        '<br><input type="radio" id="10" name="edu" value="10"><label for="10">দশম শ্রেণি পাস কিন্তু স্নাতক এর চেয়ে কম</label>'+
+        '<br><input type="radio" id="primary" name="edu" value="primary"><label for="primary">প্রাথমিক পাস তবে দশম এর চেয়ে কম</label>'+
+        '<br><input type="radio" id="1yr" name="edu" value="1yr"><label for="1yr">প্রাথমিকের চেয়ে কম তবে কমপক্ষে এক বছরের জন্য স্কুলে পড়াশুনা</label>'+
+        '<br><input type="radio" id="noschool" name="edu" value="noschool"><label for="noschool">শুধু শিক্ষিত কিন্তু কোন স্কুলিং না</label>'+
+        '<br><input type="radio" id="illit" name="edu" value="illit"><label for="illit">নিরক্ষর</label>'+
+        '<br><br>স্বামী / স্ত্রীর শিক্ষার বিবরণ:<br>'+
+	      '<input type="radio" id="prof" name="spouse_edu" value="prof" required><label for="prof">প্রযুক্তিগত ডিগ্রি বা ডিপ্লোমা সহ পেশাদার যোগ্যতা, যেমন, ডাক্তার, ইঞ্জি সিএ, এমবিএ ইত্যাদি</label>'+
+        '<br><input type="radio" id="pg" name="spouse_edu" value="pg"><label for="pg">স্নাতকোত্তর (অপ্রযুক্তিগত কোর্স, পিএইচডি ইত্যাদি)</label>'+
+        '<br><input type="radio" id="ug" name="spouse_edu" value="ug"><label for="ug">স্নাতক</label>'+
+        '<br><input type="radio" id="10" name="spouse_edu" value="10"><label for="10">দশম শ্রেণি পাস কিন্তু স্নাতক এর চেয়ে কম</label>'+
+        '<br><input type="radio" id="primary" name="spouse_edu" value="primary"><label for="primary">প্রাথমিক পাস তবে দশম এর চেয়ে কম</label>'+
+        '<br><input type="radio" id="1yr" name="spouse_edu" value="1yr"><label for="1yr">প্রাথমিকের চেয়ে কম তবে কমপক্ষে এক বছরের জন্য স্কুলে পড়াশুনা</label>'+
+        '<br><input type="radio" id="noschool" name="spouse_edu" value="noschool"><label for="noschool">শুধু শিক্ষিত কিন্তু কোন স্কুলিং না</label>'+
+        '<br><input type="radio" id="illit" name="spouse_edu" value="illit"><label for="illit">নিরক্ষর</label>'+
+        '<br><input type="radio" id="not_app" name="spouse_edu" value="not_app"><label for="not_app">প্রযোজ্য নয়</label>'+
+        '<br><br>নিজের পেশার বিবরণ:<br><input type="radio" id="govt" name="occu" value="govt" required><label for="govt">কেন্দ্রীয় / রাজ্য / সরকারী উদ্যোগে পরিষেবা বা 20 টিরও বেশি ব্যক্তি নিযুক্ত কোনও সংস্থার মালিক বা স্বনিযুক্ত পেশাদার যেমন ডাক্তার, সিএ, ইঞ্জিনিয়ার ইত্যাদি</label>'+
+        '<br><input type="radio" id="private" name="occu" value="private"><label for="private">বেসরকারী খাতে পরিষেবা বা একটি স্বতন্ত্র ব্যবসা রয়েছে যা 2 থেকে 20 জন ব্যক্তিকে নিয়োগ দেয়</label>'+
+        '<br><input type="radio" id="shops" name="occu" value="shops"><label for="shops">দোকান, বাড়ি, পরিবহন বা নিজস্ব জমি চাষের পরিষেবা</label>'+
+        '<br><input type="radio" id="self_emp" name="occu" value="self_emp"><label for="self_emp">স্ব-কর্মসংস্থান 5000 এরও বেশি আয়ের সাথে (যেমন, দোকানগুলি, প্রস্তুত বা ক্ষুদ্র ব্যবসায়)</label>'+
+        '<br><input type="radio" id="laborer" name="occu" value="laborer"><label for="laborer">স্ব-কর্মসংস্থান 5000 এর চেয়ে কম আয়ের সাথে (যেমন, শ্রমিক, গৃহবধূ)</label>'+
+        '<br><input type="radio" id="unemp" name="occu" value="unemp"><label for="unemp">পরিবারের সদস্যদের কেউই নিযুক্ত নেই</label>'+
+        '<br><input type="radio" id="student" name="occu" value="student"><label for="student">ছাত্র</label>'+
+        '<br><input type="radio" id="not_app" name="occu" value="not_app"><label for="not_app">প্রযোজ্য নয়</label>'+
+        '<br><br>স্বামী / স্ত্রীর পেশার বিবরণ:<br><input type="radio" id="govt" name="occu_spouse" value="govt" required><label for="govt">কেন্দ্রীয় / রাজ্য / সরকারী উদ্যোগে পরিষেবা বা 20 টিরও বেশি ব্যক্তি নিযুক্ত কোনও সংস্থার মালিক বা স্বনিযুক্ত পেশাদার যেমন ডাক্তার, সিএ, ইঞ্জিনিয়ার ইত্যাদি</label>'+
+        '<br><input type="radio" id="private" name="occu_spouse" value="private"><label for="private">বেসরকারী খাতে পরিষেবা বা একটি স্বতন্ত্র ব্যবসা রয়েছে যা 2 থেকে 20 জন ব্যক্তিকে নিয়োগ দেয়</label>'+
+        '<br><input type="radio" id="shops" name="occu_spouse" value="shops"><label for="shops">দোকান, বাড়ি, পরিবহন বা নিজস্ব জমি চাষের পরিষেবা</label>'+
+        '<br><input type="radio" id="self_emp" name="occu_spouse" value="self_emp"><label for="self_emp">স্ব-কর্মসংস্থান 5000 এরও বেশি আয়ের সাথে (যেমন, দোকানগুলি, প্রস্তুত বা ক্ষুদ্র ব্যবসায়)</label>'+
+        '<br><input type="radio" id="laborer" name="occu_spouse" value="laborer"><label for="laborer">স্ব-কর্মসংস্থান 5000 এর চেয়ে কম আয়ের সাথে (যেমন, শ্রমিক, গৃহবধূ)</label>'+
+        '<br><input type="radio" id="unemp" name="occu_spouse" value="unemp"><label for="unemp">পরিবারের সদস্যদের কেউই নিযুক্ত নেই</label>'+
+        '<br><input type="radio" id="student" name="occu_spouse" value="student"><label for="student">ছাত্র</label>'+
+        '<br><input type="radio" id="not_app" name="occu_spouse" value="not_app"><label for="not_app">প্রযোজ্য নয়</label>'+
+        '<br><br>জাত:<br><input type="radio" id="upper" name="caste" value="upper" required><label for="upper">উচ্চ বর্ণ</label>'+
+        '<br><input type="radio" id="obc" name="caste" value="obc"><label for="obc">ওবিসি</label>'+
+        '<br><input type="radio" id="Dalits" name="caste" value="Dalits"><label for="Dalits">এসসি</label>'+
+        '<br><input type="radio" id="tribals" name="caste" value="tribals"><label for="tribals">এসটি</label>'+
+        '<br><br>সমস্ত সূত্র থেকে মাথাপিছু আয় (পরিবারের সদস্য সংখ্যা প্রতি মোট মাসিক আয়):<br><input type="radio" id=">50k" name="income" value=">50k" required><label for=">50k">>50000</label>'+
+        '<br><input type="radio" id="20k-50k" name="income" value="20k-50k"><label for="20k-50k">20000-49999</label>'+
+        '<br><input type="radio" id="10k-20k" name="income" value="10k-20k"><label for="10k-20k">10000-19999</label>'+
+        '<br><input type="radio" id="5k-10k" name="income" value="5k-10k"><label for="5k-10k">5000-9999</label>'+
+        '<br><input type="radio" id="2500-4999" name="income" value="2500-4999"><label for="2500-4999">2500-4999</label>'+
+        '<br><input type="radio" id="5k-10k" name="income" value="5k-10k"><label for="5k-10k">5000-9999</label>'+
+        '<br><input type="radio" id="1000-2499" name="income" value="1000-2499"><label for="1000-2499">1000-2499</label>'+
+        '<br><input type="radio" id="<1000" name="income" value="<1000"><label for="<1000"><1000</label></p>',
+      button_label: "পরবর্তী"
+    }
+
+
+
+
+
+    var form_trial = {
+        type: 'survey-html-form',
+        preamble: '<p> How are you feeling <b>right now?</b> </p>',
+        html: '<br> নাম : <input type="Name" id="name" name="name" required minlength="4" maxlength="30" size="25" placeholder= "Name">'+
+              '<br> Email :  <input name="email" type="email" size="25" placeholder= "অনুগ্রহ করে Gmail আইডিটি দেবেন।">'+      
+              '<p> লিঙ্গ :  <select id="sex"><option value="M">পুরুষ</option><option value="F">মহিলা</option></p>'+ 
+              '<p> Email :  <input name="email" type="email" size="25" placeholder= "অনুগ্রহ করে Gmail আইডিটি দেবেন।"></p>'+        
+              '<p>',
+        
+    };
+    var survey_trial = {
+        type: 'survey-text',
+        questions: [
+            {prompt: "How old are you?"}, 
+            {prompt: "Where were you born?", placeholder: "City, State/Province, Country"}
+        ],
+    };
+
 
     // Instructions
 
@@ -83,17 +245,41 @@
         show_clickable_nav: true,
     };
 
-    //trial stimuli together
-
+    //trial stimuli together : Becomes redundant when we use factorial design
+/*
     var trial_stimuli = [
-        {stimulus: "img/Taj.png", data: {screen_id: "trial", correct_response: 74}},
-        {stimulus: "img/Ladder.png", data: {screen_id: "trial", correct_response: 70}},
+        {stimulus: "img/Taj.png", data: {screen_id: "trial", stimulus: "Taj", correct_response: 74}},
+        {stimulus: "img/Ladder.png", data: {screen_id: "trial", stimulus: "Ladder", correct_response: 70}},
 
     ];
+*/
+
+    //Factorial Design - Randomization
+    var factors = {
+        stimulus: ["img/Taj.png","img/Ladder.png"], // factor 1
+        trial_duration: [300, 1000], //factor 2
+    };
+
+    // Factorial Design 
+    var full_design = jsPsych.randomization.factorial(factors);
+
+    var i;
+    for (i = 0; i < full_design.length; i++){
+        //If image is Taj, stimulus == Taj, correct response = 74   
+        if (full_design[i].stimulus == "img/Taj.png"){
+            full_design[i].data = {screen_id: "trial", stimulus: "Taj", correct_response: 74}
+
+        }else {
+            full_design[i].data = {screen_id: "trial", stimulus: "Ladder", correct_response: 70}
+
+        }
+    
+    }
+
 
     //Fixation point
     var fixation_point = {
-        data: {screen_id: "fixation"},
+        data: {screen_id: "fixation",stimulus: "+" },
         type: 'html-keyboard-response',
         stimulus: "<div style='font-size: 60px'> <b> + </b> </div>",
         choices: jsPsych.NO_KEYS,
@@ -126,7 +312,7 @@
         type: "image-keyboard-response",
         stimulus: jsPsych.timelineVariable("stimulus"),
         choices: [70, 74],
-        trial_duration: 3000, //null for no limit
+        trial_duration: jsPsych.timelineVariable("trial_duration"), //null for no limit | Manualy overide is needed
         on_finish: function(data) {
             // Populate correct or incorrect data
             //Match correct with incorrect
@@ -139,26 +325,32 @@
         }
     };
 
+    // 
     var ITI_duration = [500, 750, 1000];
 
     //Feedback (shows correct or incorrect)
     var feedback_trial = {
-        data: {screen_id: "feedback"},
-        type: "html-keyboard-response",
-        stimulus: function() {
+
+        on_start: function(trial) {
             // obtain the accuracy from the previous trial
             var last_trial_accuracy = jsPsych.data.get().last(1).values()[0].accuracy;
-
-            //if the accuracy == 1, report correct
-            //if the accuracy == 0, report incorrect
             if (last_trial_accuracy == 1){
-                return "Correct!"
+                var fdbck = "Correct!" ;
             } else {
-                return "incorrect"
+                var fdbck = "incorrect";
             }
+
+            var fdbck_trial_stim = "<div style='font-size: 60px;'><b>" + fdbck + "</b></div>";
+
+            trial.data = {screen_id: "feedback", stimulus: fdbck};
+            trial.stimulus = fdbck_trial_stim;
+
         },
+        data: " ",
+        type: "html-keyboard-response",
+        stimulus: "",
         choices: jsPsych.NO_KEYS,
-        trial_duration: 500,
+        trial_duration: FDBCK_DUR, // where FDBCK_DUR is a constant assigned above
         //ISI : inter stimulus interval
         //fixed ISI
         //post_trial_gap: 500,
@@ -172,15 +364,15 @@
 
     var prac_procedure = {
         timeline: [fixation_point, trial, feedback_trial],
-        timeline_variables: trial_stimuli,
+        timeline_variables: full_design,
         randomize_order: true,
-        //repetitions: 5,
+        repetitions: PRACT_REP,
     };
 
 
     //Experiment Instructions
     var exp_instructions = {
-        data: {screen_id: "experimental_instructions"},
+        data: {screen_id: "experi_instructions"},
         type: "instructions",
         pages: [
             //Post Practice Instructions
@@ -196,9 +388,9 @@
     //Actual Expeimental Trial
     var exp_procedure = {
         timeline: [fixation_point, trial],
-        timeline_variables: trial_stimuli,
+        timeline_variables: full_design,
         randomize_order: true,
-        repetitions: 2,
+        repetitions: EXP_REP,
     };
 
 
@@ -213,7 +405,7 @@
             "<p> We have Completed our experiment </p>" +
             "<p>Please close the Screen</p>",
         ],
-        //show_clickable_nav: true,
+        show_clickable_nav: true
     };
 
 
@@ -222,7 +414,12 @@
 
     // Timeline (array type) in order of appearence
     timeline = [];
-    timeline.push(welcome_block);
+    //timeline.push(welcome_block);
+    //timeline.push(survey_trial);
+    timeline.push(consent);
+    timeline.push(demo1);
+    timeline.push(demo2);
+    timeline.push(form_trial);
     timeline.push(instruction_block);
     timeline.push(prac_procedure);
     timeline.push(exp_instructions);
@@ -235,7 +432,25 @@
     //Start Experiment
     jsPsych.init({
         timeline: timeline,
+
+        // Interaction with browser
+        on_interaction_data_update: function(data){
+            // get the main trial data
+            var trial = jsPsych.currentTrial();
+            trial.data.screen_focus = data.event;      
+            
+        },
+
+
         on_finish: function(){
+            var csv = jsPsych.data.get().csv();
+
+            // Saves the data file in csv form with the name of Participand ID asked in the begining    
+            var filename = jsPsych.data.get().values()[0].part_ID + "_" + DATE + ".csv";   
+            // Save the data file in the predefined filename
+            //var filename = "SRT_task.csv";           
+            downloadCSV(csv,filename);
+
             jsPsych.data.displayData()
 
         }
